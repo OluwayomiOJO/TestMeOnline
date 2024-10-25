@@ -39,7 +39,7 @@ const handleInputChange = (event) => {
       ...editedRecord,
       options: {
         ...editedRecord.options,
-        [optionKey]: value,  // Update the option values dynamically
+        [optionKey]: value,  // Update the option values dynamically with spread operator
       }
     });
   };
