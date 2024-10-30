@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import PageComponent from '../components/PageComponent';;
 import TButton from '../components/core/TButton';
 import axiosClient from '../axios';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { userDetails } from '../context/ContextProvider';
 
 export default function QuestionPage() {
@@ -12,6 +12,8 @@ export default function QuestionPage() {
   const [ localAnswer, setLocalAnswer ] = useState([])
   const navigate = useNavigate()
   const { upperCaseFisrt, showToast } =  userDetails() 
+  let [selectedOptions , setSelectedOptions ]= useState([])
+ 
 
 
  
@@ -55,9 +57,14 @@ const displayAnswer = (recordIndex,  ev) => {
     setQuizes(newRecords);
     const { options } = quizes[recordIndex] // extract option from this specific record
     localAnswer[recordIndex] = options[value];
-    setLocalAnswer([...localAnswer])  
-   
-   
+    setLocalAnswer([...localAnswer]);  
+
+    // state to keep tab of the local answer
+    const newopt = [...selectedOptions];
+    newopt[recordIndex] = value;
+    setSelectedOptions(newopt)
+
+    
 };
 
   //a funtion that turns the first character of a string to capital and the rest lower letters 
@@ -66,13 +73,19 @@ const displayAnswer = (recordIndex,  ev) => {
       if (quizes.length < 5) {
         setQuizes([...quizes, { quiz: '', options: { A: '', B: '', C: '', D:'' }, answer: '' }]);
       }else{
-       
+        showToast('Question limit reached' )
       }
       
    
    
   };
 
+  const handleQuestionDelete = (recordIndex) =>{
+  const newRecords = [...quizes];
+    //  delete newRecords[recordIndex]
+        newRecords.splice(recordIndex, 1) // remove one element from recordindex position
+       setQuizes(newRecords);
+  }
 
   const onSubmit =  (ev) => {
     ev.preventDefault();
@@ -113,7 +126,7 @@ const displayAnswer = (recordIndex,  ev) => {
                   htmlFor="quiz"
                   className="block text-sm font-medium text-gray-700"
                 >
-                 { <h4 className="mt-4 text-lg font-bold">Question  {recordIndex + 1}: { upperCaseFisrt(record.quiz, '?')}</h4>
+                 { <h4 className="mt-4 text-lg font-bold">Question  {recordIndex + 1}: { upperCaseFisrt(record?.quiz, '?')}</h4>
                  }
                 </label>
               
@@ -131,8 +144,8 @@ const displayAnswer = (recordIndex,  ev) => {
               <ul className="list-inside">
               <h4 className="mt-4 text-lg font-bold">Options</h4>
                     <div  style={{ marginLeft: '20px', marginBottom: '10px' }}>
-                  {Object.keys(record.options).map((optionKey) => (
-                   <li  className="flex justify-between gap-x-6 py-5">
+                  {Object.keys(record.options).map((optionKey, index) => (
+                   <li key={index} className="flex justify-between gap-x-6 py-5">
                    <div className="min-w-0 flex-auto">
                        <label
                        htmlFor={optionKey}
@@ -149,7 +162,7 @@ const displayAnswer = (recordIndex,  ev) => {
                        placeholder="Type option A here"
                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                        />
-                       {errors[recordIndex]?.['options.A'] && <p className="error text-red text-sm">{errors[recordIndex].options[optionKey][0]}</p>}
+                       {errors[recordIndex]?.['options?.A'] && <p className="error text-red text-sm">{errors[recordIndex].options[optionKey][0]}</p>}
                  </div>
                  </li>
                 ))}
@@ -157,7 +170,9 @@ const displayAnswer = (recordIndex,  ev) => {
             </div>
        
             <h4 className="mt-4 text-lg font-bold">Select an Answer</h4>
-                    <select id={recordIndex}  name='answer' disabled={lock}  onChange={(ev) => displayAnswer(recordIndex,  ev)}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                     {selectedOptions[recordIndex]}
+                
+                    <select id={recordIndex}  value={selectedOptions[recordIndex] || ""} name='answer' disabled={lock}  onChange={(ev) => displayAnswer(recordIndex,  ev)}  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="" disabled>
                       -- Please choose an option --
                       </option>
@@ -170,7 +185,13 @@ const displayAnswer = (recordIndex,  ev) => {
       </ul>
       { localAnswer[recordIndex] ?  ( <h4 className="mt-4 text-lg font-bold">Your answer to question {recordIndex + 1} is :{upperCaseFisrt(localAnswer[recordIndex])}</h4>): 'No answer yet'}
 
-         
+      <div className="flex items-center">
+                      {recordIndex > 0 && (
+                        <TButton onClick={(ev)=>handleQuestionDelete(recordIndex, ev)} circle link color="red">
+                          <TrashIcon className="w-5 h-5" />
+                        </TButton>
+                      )}
+        </div>
         </div>
       
               ))}
@@ -179,6 +200,7 @@ const displayAnswer = (recordIndex,  ev) => {
 
               <div className="flex justify-between">  
                 <h3 className="text-2xl font-bold">Questions</h3>
+
                 <button
                   type="button"
                   className="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
@@ -187,6 +209,7 @@ const displayAnswer = (recordIndex,  ev) => {
                   <PlusIcon className="w-4 mr-2"/>
                   Add question
                 </button>
+             
               </div>
             
             </div>

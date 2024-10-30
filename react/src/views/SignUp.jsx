@@ -8,6 +8,7 @@ function SignUp() {
  const [email , setEmail] = useState('')
  const [password , setPassword] = useState('')
  const [passwordConfirmation , setPasswordConfirmation] = useState('')
+ const { showToast } = userDetails()
 
  const [error , setError] = useState({__html:''})
 
@@ -26,6 +27,8 @@ function SignUp() {
     .then(({ data }) => {
        setUser(data.user)
        setUserToken(data.token)
+       showToast('Sign Up Successful' )
+
     })
     .catch((error) => {
       if (error.response) {

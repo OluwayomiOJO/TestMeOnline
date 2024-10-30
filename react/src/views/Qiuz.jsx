@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../axios";
 import './Quiz.css'
+import { ForwardIcon, LinkIcon } from "@heroicons/react/24/outline";
+import TButton from "../components/core/TButton";
 
 export default function Qiuz() {
 
@@ -114,6 +116,7 @@ useEffect(() => {
     {lastPage? <>
       <h2>You Scored:  {score} out of {quizes?.length}</h2>
       <button onClick={reset}>Reset</button>
+      
      </>:<>
     <h2>{index + 1}. {quizes[index]?.quiz}?</h2>
     <ul>
@@ -122,7 +125,11 @@ useEffect(() => {
           <li ref={options[optionIndex]} key={key} onClick={(e) => {checkAnswer(e, key)}}>{value}</li>
         ))}
     </ul>
-    <button onClick={next}>Next</button>
+ 
+           <TButton color="green" onClick={next}>
+            <ForwardIcon className="h-40 w-40 mr-4" />
+            Next Quiz
+          </TButton>
     <div className="index"> {index+1} of {quizes?.length} Questions</div>
      </> } 
      
