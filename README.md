@@ -6,15 +6,15 @@
 I recently wrote an online test for a role I applied for. After seeing my resume, the employer invited for an online test.
 I was fascinated by the awesomeness of the test app, the user interface was very sleek and interactive, and I decided to create one from scratch, add the dashboard (user’s backend) that I imagined for it since I didn’t have access to it and improve on what I experienced at the frontend by adding more features and eventually come up with a relatively better version so that young programmers can learn from it. (I am also a volunteer coding Instructor as Ye WeCode, Canada)
 ## The Tech Stack and Architecture
-Databases : MySQL,
-Framework:   Laravel , 
-Backend: PHP
-Frontend: JavaScript React. 
-CSS UI framework:  Tailwind, Headless Heroi Icon 
-And the CSS UI framework is tailwind.
-React hooks extensively used:  useState, useParam, useRef, useContext  
-Some array methods used: map(). Filter(),optional chaining, splice(), react destructuring, , HeroIcons
-API vendor: axios’ axiosClient().  Laravel’s apiResource()
++ Databases : MySQL,
++ Framework:   Laravel , 
++ Backend: PHP
++ Frontend: JavaScript React. 
++ CSS UI framework:  Tailwind, Headless Heroi Icon 
++  CSS UI framework :  tailwind.
++ React hooks extensively used:  useState, useParam, useRef, useContext  
++ Some array methods used: map(). Filter(),optional chaining, splice(), react destructuring, , HeroIcons
++ API vendor: axios’ axiosClient().  Laravel’s apiResource()
 
 ## Key Feature
 1.	Sign in and sigh out features
